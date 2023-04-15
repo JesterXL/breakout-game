@@ -26,6 +26,7 @@ type alias Model =
     , dy : Float
     , rightPressed : Bool
     , leftPressed : Bool
+    , bricks : List (List Brick)
     }
 
 
@@ -68,6 +69,7 @@ initialModel seed =
     , dy = -2
     , rightPressed = False
     , leftPressed = False
+    , bricks = buildBricks
     }
 
 
@@ -84,6 +86,62 @@ type alias Component =
     , gravitySpeed : Float
     , radius : Float
     }
+
+
+brickRowCount : Int
+brickRowCount =
+    3
+
+
+brickColumnCount : Int
+brickColumnCount =
+    5
+
+
+brickWidth : Float
+brickWidth =
+    75
+
+
+brickHeight : Float
+brickHeight =
+    20
+
+
+brickPadding : Float
+brickPadding =
+    10
+
+
+brickOffsetTop : Float
+brickOffsetTop =
+    30
+
+
+brickOffsetLeft : Float
+brickOffsetLeft =
+    30
+
+
+type alias Brick =
+    { x : Float
+    , y : Float
+    }
+
+
+buildBricks : List (List Brick)
+buildBricks =
+    List.range 0 (brickColumnCount - 1)
+        |> List.indexedMap
+            (\c _ ->
+                List.range 0 (brickRowCount - 1)
+                    |> List.indexedMap
+                        (\r _ ->
+                            { x = toFloat c * (brickWidth + brickPadding) + brickOffsetLeft
+                            , y = toFloat r * (brickHeight + brickPadding) + brickOffsetTop
+                            }
+                        )
+            )
 
 
 type Msg
@@ -246,7 +304,8 @@ view model =
                 [ style "border" "1px solid rgba(0,0,0,1)" ]
                 (clearScreen
                     :: drawMyBall model.myBall
-                    :: [ drawMyPaddle model.myPaddle ]
+                    :: drawMyPaddle model.myPaddle
+                    :: [ drawBricks model.bricks ]
                 )
             ]
         , div
@@ -295,6 +354,21 @@ drawMyPaddle component =
     shapes
         [ fill (Color.hsl 0.5 0.3 0.7) ]
         [ rect ( component.x, component.y ) component.width component.height ]
+
+
+drawBricks : List (List Brick) -> Canvas.Renderable
+drawBricks bricks =
+    shapes
+        [ fill (Color.hsl 0.5 0.3 0.7) ]
+        (List.concatMap (List.map drawBrick) bricks)
+
+
+drawBrick brick =
+    let
+        _ =
+            Debug.log "x" brick.x
+    in
+    rect ( brick.x, brick.y ) brickWidth brickHeight
 
 
 canvasWidth : Float
