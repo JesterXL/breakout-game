@@ -1,0 +1,32 @@
+{
+  "name": "simple-game",
+  "version": "1.0.0",
+  "description": "simple flappy bird like game",
+  "main": "index.js",
+  "scripts": {
+    "start": "elm-live src/Main.elm --start-page=src/index.html -- --output=src/elm.js --debug",
+    "review": "elm-review",
+    "build": "npm run clean && npm run compile && npm run uglify && npm run copy",
+    "clean": "rm -rf docs",
+    "compile": "elm make src/Main.elm --output=src/elm.js",
+    "uglify": "npx uglify-js src/elm.js --compress 'pure_funcs=[F2,F3,F4,F5,F6,F7,F8,F9,A2,A3,A4,A5,A6,A7,A8,A9],pure_getters,keep_fargs=false,unsafe_comps,unsafe' | npx uglify-js --mangle --output src/elm.js",
+    "copy": "mkdir docs && cp src/elm.js docs/elm.js && cp src/index.html docs/index.html && cp src/elm-canvas.js docs/elm-canvas.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JesterXL/simple-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JesterXL/simple-game/issues"
+  },
+  "homepage": "https://github.com/JesterXL/simple-game#readme",
+  "devDependencies": {
+    "elm": "^0.19.1-5",
+    "elm-format": "^0.8.6",
+    "elm-live": "^4.0.2",
+    "elm-review": "^2.9.2"
+  }
+}
