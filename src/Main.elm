@@ -109,10 +109,10 @@ update msg model =
                     updateDirectionX model.myBall model.dx model.myBall.radius
 
                 updatedDY =
-                    updateDirectionY model.myBall model.dy model.myBall.radius
+                    updateDirectionY model.myBall model.dy model.myBall.radius model.myPaddle.x model.myPaddle.width
 
                 isGameOver =
-                    updateGameOver model.myBall model.dy
+                    updateGameOver model.myBall updatedDY
             in
             if isGameOver == False then
                 ( { model
@@ -176,9 +176,16 @@ updateDirectionX ball dx ballRadius =
         dx
 
 
-updateDirectionY : Component -> Float -> Float -> Float
-updateDirectionY ball dy ballRadius =
-    if ball.y + dy > canvasHeight - ballRadius || ball.y + dy < ballRadius then
+updateDirectionY : Component -> Float -> Float -> Float -> Float -> Float
+updateDirectionY ball dy ballRadius paddleX paddleWidth =
+    if ball.y + dy > canvasHeight - ballRadius then
+        if ball.x > paddleX && ball.x < paddleX + paddleWidth then
+            dy * -1
+
+        else
+            dy
+
+    else if ball.y + dy < ballRadius then
         dy * -1
 
     else
@@ -201,6 +208,19 @@ updateGameOver : Component -> Float -> Bool
 updateGameOver ball dy =
     if ball.y + dy > canvasHeight - ball.radius then
         True
+
+    else
+        False
+
+
+hitPaddle : Component -> Float -> Float -> Float -> Bool
+hitPaddle ball dy paddleX paddleWidth =
+    if ball.y + dy > canvasHeight - ball.radius then
+        if ball.x > paddleX && ball.x < paddleX + paddleWidth then
+            True
+
+        else
+            False
 
     else
         False
